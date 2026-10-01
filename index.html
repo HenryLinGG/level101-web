@@ -680,7 +680,7 @@
         <div class="info-row"><span class="k">服務時間</span><span class="v">週一至週五 10:00–19:00</span></div>
       </div>
     </div>
-    <form class="contact-form" onsubmit="event.preventDefault(); this.querySelector('.done').hidden = false;">
+    <form class="contact-form" id="l101-form" action="https://formspree.io/f/xjykznye" method="POST">
       <div class="field">
         <label for="l101-name">姓名</label>
         <input id="l101-name" name="name" type="text" placeholder="您的稱呼" required>
@@ -695,7 +695,39 @@
       </div>
       <button type="submit" class="btn btn-primary" style="align-self:flex-start; margin-top:6px; cursor:pointer;">送出諮詢需求</button>
       <p class="done" hidden style="color:var(--gold-strong); font-size:0.88rem; margin:4px 0 0;">收到了，我們會盡快與您聯繫。</p>
+      <p class="error" hidden style="color:#c0392b; font-size:0.88rem; margin:4px 0 0;">送出失敗，請改寄 Email 到 henglin0301@gmail.com。</p>
     </form>
+    <script>
+      (function () {
+        var form = document.getElementById('l101-form');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var doneMsg = form.querySelector('.done');
+          var errMsg = form.querySelector('.error');
+          var btn = form.querySelector('button[type="submit"]');
+          doneMsg.hidden = true;
+          errMsg.hidden = true;
+          btn.disabled = true;
+          fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' }
+          }).then(function (res) {
+            if (res.ok) {
+              doneMsg.hidden = false;
+              form.reset();
+            } else {
+              errMsg.hidden = false;
+            }
+          }).catch(function () {
+            errMsg.hidden = false;
+          }).finally(function () {
+            btn.disabled = false;
+          });
+        });
+      })();
+    </script>
   </div>
 </section>
 
